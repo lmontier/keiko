@@ -9,15 +9,11 @@ interface Props {
 
 class Pokemon extends React.Component<Props> {
   render(): React.ReactNode {
+    const url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + this.props.id + ".png";
     return (
       <Style.Intro>
-        <div>Bienvenue sur ton futur pokédex !</div>
-        <div>
-          Tu vas pouvoir apprendre tout ce qu'il faut sur React, Redux et Symfony, et attraper des
-          pokemons !
-        </div>
-        <div>Voici ce pokemon. C'est {this.props.name}, de son numéro {this.props.id} </div>
-        <div>  <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"/>  </div>
+        <div>Voici {this.props.name || "lol"}, le pokémon n°{this.props.id || 666} </div>
+        <div>  <img src={url} alt={'lool'}/>  </div>
       </Style.Intro>
     );
   }
