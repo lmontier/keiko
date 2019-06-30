@@ -3,7 +3,7 @@ import * as React from 'react';
 
 import {makeGetRequest} from "services/networking/request";
 import Style from './Home.style';
-import {string} from "prop-types";
+import loader from './loader.svg'
 
 // tslint:disable-next-line:no-empty-interface
 interface Props {}
@@ -12,35 +12,46 @@ interface State {
     id: number;
     name: string;
   }>;
+  problem: any;
 }
 
 class Home extends React.Component<Props, State> {
-  componentDidMount() {
+  async componentDidMount() {
 
-    makeGetRequest("/pokemon")
-      .then(response => response.body)
-      .then(pokemons => this.setState(
-        {pokemons}
-        ))
+    try {
+      const data = await makeGetRequest("/pokemon");
+      this.setState({pokemons: data.body})
+    } catch (e)
+    {
+      this.setState({problem: "erreur: " + e})
+    }
   }
 
   render(): React.ReactNode {
       if (this.state != null) {
-        return (
-          <Style.Intro>
-            <div>Bienvenue sur mon pokédex !</div>
-            {
-              this.state.pokemons.map((pkmArray) =>
-                <Pokemon key={pkmArray.id} name={pkmArray.name} id={pkmArray.id}/>
-              )
-            }
-          </Style.Intro>
-        );
+        if (this.state.problem == null) {
+          return (
+            <Style.Intro>
+              <div>Bienvenue sur mon pokédex !</div>
+              {
+                this.state.pokemons.map((pkmArray) =>
+                  <Pokemon key={pkmArray.id} name={pkmArray.name} id={pkmArray.id}/>
+                )
+              }
+            </Style.Intro>
+          );
+        }
+        else {
+          return(
+            <div> Les problemes {this.state.problem} </div>
+          )
+        }
       }
       else {
         return(
         <Style.Intro>
           <div>Bienvenue sur mon pokédex !</div>
+          <img src={loader} alt={"lol"} />
           <div> Loading </div>
         </Style.Intro>
         );
